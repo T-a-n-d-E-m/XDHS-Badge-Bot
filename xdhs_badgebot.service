@@ -1,0 +1,16 @@
+[Unit]
+Description=XDHS Badge Bot
+After=network.target
+
+[Service]
+Type=simple
+User=xdhs
+Group=xdhs
+WorkingDirectory=/opt/XDHS-Badge-Bot/
+ExecStart=/opt/XDHS-Badge-Bot/xdhs_badgebot.py
+StandardOutput=syslog
+StandardOutput=syslog
+Restart=always
+
+[Install]
+WantedBy=default.target

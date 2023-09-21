@@ -1,0 +1,3 @@
+avatar.png - Default avatar image for the XDHS bot.
+avatar.png.txt - License for avatar.png
+timer_clock.png - Icon used by embeds on the 'Last updated' footer.
