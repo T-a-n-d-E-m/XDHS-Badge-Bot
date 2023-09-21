@@ -44,12 +44,7 @@ from config import config
 DISCORD_TOKEN = config['DISCORD']['TOKEN']
 
 BOT_COMMANDS_CHANNEL_NAME = "bot-commands"  # Used by XDHS-Team and BadgeBot
-BOT_COMMANDS_CHANNEL_ID = 753637350877429842
 BOT_SPAM_CHANNEL_NAME = "🤖-bot-spam"  #  Used by members for ?stats and ?badges
-POD_1_MIN = 45  # Minimum win rate threshold required for pod 1 role
-POD_2_MAX = 55  # Maximum win rate threshold allowed for pod 2 role
-DAY_OF_MONTH_TO_CHECK_POD_ROLES = 1
-XDHS_GUILD_ID = 528728694680715324
 
 logging.basicConfig(level=logging.INFO, filename=config['LOGGING']['PATH'], filemode='a+', format='%(asctime)s [%(levelname)s] : %(message)s', encoding='utf-8')
 
@@ -110,13 +105,6 @@ async def on_message(message):
 	else:
 		await bot.process_commands(message)
 
-
-"""
-@bot.event
-async def on_member_remove(member):
-	channel = bot.get_channel(BOT_COMMANDS_CHANNEL_ID)
-	await channel.send(F"{member} has left the server.")
-"""
 
 class TeamCommands(commands.Cog, name="Team Commands"):
 	"""Commands usable only by team members"""
@@ -274,18 +262,6 @@ class MemberCommands(commands.Cog, name='Member Commands'):
 		embed.add_field(name='Chrono win rate (all time)', value=win_rate_all_time_league_string, inline=True)
 		embed.add_field(name='Bonus win rate (all time)', value=win_rate_all_time_bonus_string, inline=True)
 		embed.add_field(name='Overall win rate (all time)', value=win_rate_all_time_overall_string, inline=True)
-
-		win_rate_recent_overall_value = float(stats[18])
-		valid_pods = ""
-		if win_rate_recent_overall_value > POD_2_MAX:
-			valid_pods = "Pod 1"
-		elif win_rate_recent_overall_value < POD_1_MIN:
-			valid_pods = "Pod 2"
-		else:
-			valid_pods = "Pod 1 or 2"
-
-		desired = stats[22]
-		assigned = stats[23]
 
 		embed.timestamp = datetime.datetime.fromtimestamp(stats[0])
 		embed.set_footer(text=F"Last updated", icon_url="https://i.imgur.com/NPtgFpC.png")
