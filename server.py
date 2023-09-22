@@ -173,32 +173,34 @@ def upload_commands():
 """
 @app.route("/make_thumbnail", methods=['POST'])
 def make_thumbnail():
-	if request.headers.get('API_KEY') == API_KEY:
-		url = request.json['url']
-		# Check the cache - we might have already converted this.
-		if database.has_thumbnail(url):
-			#print(F"thumbnail image found in cache")
-			return {'url': database.get_thumbnail(url)}, 200
+    if request.headers.get('API_KEY') == API_KEY:
+        url = request.json['url']
+        key = urllib.parse.quote(url, safe="") # Replit DB can't use unencoded URLs as keys without bugging out... 
+        # Check the cache - we might have already converted this.
+        if key in db.keys():
+            print(F"Found thumbnail in cache: {db[key]}")
+            return {'url': db.get(key)}, 200
 
-		data = requests.get(url).content
-		img = Image.open(io.BytesIO(data))
-		img = img.resize((50, 50), Image.ANTIALIAS)
-		buffer = io.BytesIO()
-		img.save(buffer, format='PNG')
-		thumb = upload_to_imgur(buffer.getvalue(),
-								str(uuid.uuid4()) +
-								'.png')  # TODO: does .png need to be added?
-		#file_path = "badge_thumbnails/" + str(uuid.uuid4()) + ".png"
-		#img.save(file_path, format='PNG')
-		#thumb = "https://XDHS.repl.co/" + file_path
-		if thumb is not None:
-			database.insert_thumbnail(url, thumb)
-		return {'url': thumb}, 200
-	else:
-		return "", 403
+        # First time seeing this image. Resize and cache it.
+        data = requests.get(url).content
+        img = Image.open(io.BytesIO(data))
+        img = img.resize((50, 50), Image.ANTIALIAS)
+        #buffer = io.BytesIO()
+        #img.save(buffer, format='PNG')
+        #thumb = upload_to_imgur(buffer.getvalue(), str(uuid.uuid4()) + '.png')  # TODO: does .png need to be added?
+        file_path = "static/badge_thumbnails/" + str(uuid.uuid4()) + ".png"
+        img.save(file_path, format='PNG')
+        thumb = "http://harvest-sigma.bnr.la/" + file_path
+        if thumb is not None:
+            print(F"Adding thumbnail to cache: db[{key}] = {thumb}")
+            db[key] = thumb
+        return {'url': thumb}, 200
+    else:
+        return "", 403
 """
 
 
+"""
 @app.route("/cache_badge_card", methods=['POST'])
 def cache_badge_card():
 	if request.headers.get('API_KEY') == API_KEY:
@@ -210,6 +212,7 @@ def cache_badge_card():
 	else:
 		logging.warning("/upload_stats: API_KEY not sent")
 		return "", 403
+"""
 
 
 def run():
