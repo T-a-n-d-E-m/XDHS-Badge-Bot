@@ -9,6 +9,7 @@ DATABASE_NAME =
 API_KEY =
 BIND_ADDRESS=
 BIND_PORT =
+API_URL =  # URL or IP address of the server BadgeBot is running on.
 
 [IMGUR]
 CLIENT_SECRET =
