@@ -30,6 +30,7 @@ import io
 import uuid
 import time
 from flask import Flask, request, jsonify, abort, send_from_directory
+from pdf2image import convert_from_bytes  # Note: Needs the poppler-utils package installed with `install-pkg poppler-utils`
 from threading import Thread
 import base64
 import database
@@ -57,6 +58,35 @@ def get_image(filename):
 		return send_from_directory('/opt/XDHS-Badge-Bot/static', filename)
 	except FileNotFoundError:
 		abort(404)
+
+
+
+@app.route("/pdf2png", methods=['POST'])
+def pdf2png():
+	if request.headers.get('API_KEY') == API_KEY:
+		width = request.json['width']
+		height = request.json['height']
+		dpi = request.json['dpi']
+		user_id = request.json['user_id']
+		pdf = base64.b64decode(request.json['bytes'])
+		images = convert_from_bytes(pdf_file=pdf, dpi=dpi)
+		cropped = images[0].crop((0, 0, width, height))
+		filename = str(uuid.uuid4()) + '.png'  # TODO: does .png need to be added?
+
+		buffer = io.BytesIO()
+		cropped.save(buffer, format='PNG')  #, poppler_path=POPPLER_PATH)
+		url = upload_to_imgur(buffer.getvalue(), filename)
+
+		logging.info(F"/pdf2png: width:{width} height:{height} dpi:{dpi} discord_id:{user_id} url:{url} timestamp:{int(time.time())}")
+
+		# If the user_id field is set, this is a badge card. Add it to the database for use by the ?badges command.
+		if user_id != "":
+			database.upsert_badge_card(user_id, url)
+			response = jsonify({'url': url})
+			return response, 200
+		else:
+			return "", 403
+
 
 
 #@app.route('/badge_thumbnails/<path:filename>', methods=['GET'])
