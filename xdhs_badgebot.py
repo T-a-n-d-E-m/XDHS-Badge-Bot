@@ -217,7 +217,7 @@ class MemberCommands(commands.Cog, name='Member Commands'):
 		stats = database.get_stats(discord_id)
 		print(F"stats for {discord_id}: {stats}")
 		if stats is None:
-			await ctx.send(F"No stats found for {ctx.message.author.name}. You must complete at least one XDHS league/bonus draft or wait a few hours after your first draft for your stats to be available.")
+			await ctx.send(F"No stats found for {ctx.message.author.name}. You must complete at least one XDHS chrono/bonus draft and wait a few hours after your first draft for your stats to be available.")
 			return
 
 		await ctx.send(F"{ctx.message.author.name}, your stats will be delivered via private message.")
