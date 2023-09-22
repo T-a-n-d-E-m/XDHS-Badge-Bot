@@ -92,6 +92,23 @@ def get_badge_card(discord_id):
     cursor.close()
     return badges
 
+def upsert_badge_thumbnail(name, url):
+    database = connect();
+    cursor = database.cursor(prepared=True);
+    cursor.execute("REPLACE INTO badge_thumbnails (name, url) VALUES (%s, %s)", (name, url));
+    database.commit();
+    cursor.close()
+
+def get_badge_thumbnail(name):
+    database = connect();
+    cursor = database.cursor(prepared=True)
+    cursor.execute("SELECT url FROM badge_thumbnails WHERE name=%s", (name,))
+    thumb = cursor.fetchone()
+    if(cursor.rowcount == 0):
+        return None
+    cursor.close()
+    return thumb
+
 def get_stats(discord_id):
     db = connect()
     cursor = db.cursor(prepared=True)
