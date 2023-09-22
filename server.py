@@ -32,6 +32,7 @@ import time
 from flask import Flask, request, jsonify, abort, send_from_directory
 from pdf2image import convert_from_bytes  # Note: Needs the poppler-utils package installed with `install-pkg poppler-utils`
 from threading import Thread
+import requests
 import base64
 import database
 import logging
@@ -39,9 +40,12 @@ import json
 from imgur import upload_to_imgur
 from config import config
 import database
+from PIL import Image
 
 
 API_KEY = config['FLASK']['API_KEY']  # Needs to be sent with the HTTP header or the request will be rejected TODO Needs a better name
+
+API_URL = config['FLASK']['API_URL']
 
 app = Flask(__name__)
 
@@ -170,34 +174,34 @@ def upload_commands():
 		return "", 403
 
 
-"""
 @app.route("/make_thumbnail", methods=['POST'])
 def make_thumbnail():
     if request.headers.get('API_KEY') == API_KEY:
         url = request.json['url']
-        key = urllib.parse.quote(url, safe="") # Replit DB can't use unencoded URLs as keys without bugging out... 
+        url_parts = url.split('/')
+        key = url_parts[-1]
         # Check the cache - we might have already converted this.
-        if key in db.keys():
-            print(F"Found thumbnail in cache: {db[key]}")
-            return {'url': db.get(key)}, 200
+        have = database.get_badge_thumbnail(key)
+        if have is not None:
+            #print(F"Found thumbnail in cache: {db[key]}")
+            return {'url': have[0]}, 200
 
         # First time seeing this image. Resize and cache it.
         data = requests.get(url).content
         img = Image.open(io.BytesIO(data))
-        img = img.resize((50, 50), Image.ANTIALIAS)
+        img = img.resize((50, 50), Image.Resampling.LANCZOS)
         #buffer = io.BytesIO()
         #img.save(buffer, format='PNG')
         #thumb = upload_to_imgur(buffer.getvalue(), str(uuid.uuid4()) + '.png')  # TODO: does .png need to be added?
-        file_path = "static/badge_thumbnails/" + str(uuid.uuid4()) + ".png"
+        file_path = "static/badge_thumbnails/" + key
         img.save(file_path, format='PNG')
-        thumb = "http://harvest-sigma.bnr.la/" + file_path
+        thumb = config['FLASK']['API_URL'] + ':' + config['FLASK']['BIND_PORT'] + '/' + file_path
         if thumb is not None:
-            print(F"Adding thumbnail to cache: db[{key}] = {thumb}")
-            db[key] = thumb
+            #print(F"Adding thumbnail to cache: db[{key}] = {thumb}")
+            database.upsert_badge_thumbnail(key, thumb)
         return {'url': thumb}, 200
     else:
         return "", 403
-"""
 
 
 """
