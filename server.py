@@ -98,38 +98,6 @@ def pdf2png():
 #		abort(404)
 
 
-"""
-@app.route("/upload_badge_card", methods=['POST'])
-def upload_badge_card():
-	if request.headers.get('API_KEY') == API_KEY:
-		width = request.json['width']
-		height = request.json['height']
-		dpi = request.json['dpi']
-		user_id = request.json['user_id']
-		pdf = base64.b64decode(request.json['bytes'])
-		images = convert_from_bytes(pdf_file=pdf, dpi=dpi)
-		cropped = images[0].crop((0, 0, width, height))
-		filename = str(uuid.uuid4()) + '.png'  # TODO: does .png need to be added?
-
-		logging.info(F"/upload_badge_card: {width} {height} {dpi} {user_id}")
-
-		#cropped.save('converted/' + filename, format='PNG', poppler_path=POPPLER_PATH)
-		#url = upload_to_imgbb('https://XDHS.repl.co' + '/converted/' + filename)
-
-		buffer = io.BytesIO()
-		cropped.save(buffer, format='PNG', poppler_path=POPPLER_PATH)
-		url = upload_to_imgur(buffer.getvalue(), filename)
-
-		logging.info(F"/upload_badge_card: discord_id:{user_id} url:{url} timestamp:{int(time.time())}")
-
-		if user_id != "":  # non members (e.g. .de randos) won't have a user_id
-			database.insert_or_replace_badge_card(user_id, url)
-
-		response = jsonify({'url': url})
-		return response, 200
-	else:
-		return "", 403
-"""
 
 @app.route("/upload_leaderboard", methods=['POST'])
 def upload_leaderboard():
