@@ -86,10 +86,12 @@ def pdf2png():
 		# If the user_id field is set, this is a badge card. Add it to the database for use by the ?badges command.
 		if user_id != "":
 			database.upsert_badge_card(user_id, url)
-			response = jsonify({'url': url})
-			return response, 200
-		else:
-			return "", 403
+
+		response = jsonify({'url': url})
+		return response, 200
+
+	else:
+		return "", 403
 
 
 
