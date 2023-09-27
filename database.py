@@ -300,3 +300,11 @@ def get_all_pod_and_win_rates():
     results = cursor.fetchall()
     cursor.close()
     return results
+
+def upsert_xmage_version(version):
+    database = connect()
+    cursor = database.cursor(prepared=True)
+    timestamp = datetime.utcnow().timestamp()
+    cursor.execute("REPLACE INTO xmage_version (version, timestamp) VALUES (%s, %s)", (version, timestamp))
+    database.commit()
+    cursor.close()

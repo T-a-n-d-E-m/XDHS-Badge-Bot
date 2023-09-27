@@ -206,6 +206,16 @@ def make_thumbnail():
         return "", 403
 
 
+@app.route("/update_xmage_version", methods=['POST'])
+def update_xmage_version():
+    if request.headers.get('API_KEY') == API_KEY:
+        version = request.json['version']
+        database.upsert_xmage_version(version)
+        return "", 200
+    else:
+        return "", 403
+        
+
 """
 @app.route("/cache_badge_card", methods=['POST'])
 def cache_badge_card():
