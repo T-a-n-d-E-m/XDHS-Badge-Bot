@@ -305,6 +305,6 @@ def upsert_xmage_version(version):
     database = connect()
     cursor = database.cursor(prepared=True)
     timestamp = datetime.utcnow().timestamp()
-    cursor.execute("REPLACE INTO xmage_version (version, timestamp) VALUES (%s, %s)", (version, timestamp))
+    cursor.execute("REPLACE INTO xmage_version (version, timestamp) VALUES (%s, %s)", (version, int(timestamp)))
     database.commit()
     cursor.close()
