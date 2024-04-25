@@ -176,7 +176,7 @@ def upload_commands():
 		return "", 403
 
 
-@app.route("/make_thumbnail", methods=['POST'])
+@app.route("/api/v1/make_thumbnail", methods=['POST'])
 def make_thumbnail():
     if request.headers.get('API_KEY') == API_KEY:
         url = request.json['url']
@@ -189,7 +189,9 @@ def make_thumbnail():
             return {'url': have[0]}, 200
 
         # First time seeing this image. Resize and cache it.
-        data = requests.get(url).content
+        #logging.info(F"make_thumbnail: Downloading '{url}'")
+        # TandEm (2024-04-25) : Imgur appears to be rate limiting requests made with no user agent string set, so we have to set something here. Testing shows that curl works so that's what I'll use!
+        data = requests.get(url, headers={"user-agent":"curl/7.74.0"}).content
         img = Image.open(io.BytesIO(data))
         img = img.resize((50, 50), Image.Resampling.LANCZOS)
         #buffer = io.BytesIO()
@@ -201,7 +203,7 @@ def make_thumbnail():
         if thumb is not None:
             #print(F"Adding thumbnail to cache: db[{key}] = {thumb}")
             database.upsert_badge_thumbnail(key, thumb)
-        return {'url': thumb}, 200
+        return {'result': thumb}, 201
     else:
         return "", 403
 
