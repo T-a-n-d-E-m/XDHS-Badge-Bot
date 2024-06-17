@@ -203,7 +203,7 @@ def make_thumbnail():
         if thumb is not None:
             #print(F"Adding thumbnail to cache: db[{key}] = {thumb}")
             database.upsert_badge_thumbnail(key, thumb)
-        return {'result': thumb}, 201
+        return {'url': thumb}, 201
     else:
         return "", 403
 
