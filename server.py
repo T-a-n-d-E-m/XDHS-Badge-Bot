@@ -186,7 +186,7 @@ def make_thumbnail():
         have = database.get_badge_thumbnail(key)
         if have is not None:
             #print(F"Found thumbnail in cache: {db[key]}")
-            return {'url': have[0]}, 200
+            return {'result': have[0]}, 200
 
         # First time seeing this image. Resize and cache it.
         #logging.info(F"make_thumbnail: Downloading '{url}'")
@@ -203,7 +203,7 @@ def make_thumbnail():
         if thumb is not None:
             #print(F"Adding thumbnail to cache: db[{key}] = {thumb}")
             database.upsert_badge_thumbnail(key, thumb)
-        return {'url': thumb}, 201
+        return {'result': thumb}, 201
     else:
         return "", 403
 
