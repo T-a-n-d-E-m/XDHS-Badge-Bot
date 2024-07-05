@@ -65,13 +65,14 @@ def get_image(filename):
 
 
 
-@app.route("/pdf2png", methods=['POST'])
+"""
+@app.route("/api/v1/pdf2png", methods=['POST'])
 def pdf2png():
 	if request.headers.get('API_KEY') == API_KEY:
 		width = request.json['width']
 		height = request.json['height']
 		dpi = request.json['dpi']
-		user_id = request.json['user_id']
+		member_id = request.json['member_id']
 		pdf = base64.b64decode(request.json['bytes'])
 		images = convert_from_bytes(pdf_file=pdf, dpi=dpi)
 		cropped = images[0].crop((0, 0, width, height))
@@ -81,18 +82,18 @@ def pdf2png():
 		cropped.save(buffer, format='PNG')  #, poppler_path=POPPLER_PATH)
 		url = upload_to_imgur(buffer.getvalue(), filename)
 
-		logging.info(F"/pdf2png: width:{width} height:{height} dpi:{dpi} discord_id:{user_id} url:{url} timestamp:{int(time.time())}")
+		logging.info(F"/pdf2png: width:{width} height:{height} dpi:{dpi} discord_id:{member_id_id} url:{url} timestamp:{int(time.time())}")
 
-		# If the user_id field is set, this is a badge card. Add it to the database for use by the ?badges command.
-		if user_id != "":
-			database.upsert_badge_card(user_id, url)
+		# If the member_id field is set, this is a badge card. Add it to the database for use by the ?badges command.
+		if member_id != "":
+			database.upsert_badge_card(member_id, url)
 
-		response = jsonify({'url': url})
-		return response, 200
+		response = jsonify({'result': url})
+		return response, 201
 
 	else:
 		return "", 403
-
+"""
 
 
 #@app.route('/badge_thumbnails/<path:filename>', methods=['GET'])
@@ -176,6 +177,7 @@ def upload_commands():
 		return "", 403
 
 
+"""
 @app.route("/api/v1/make_thumbnail", methods=['POST'])
 def make_thumbnail():
     if request.headers.get('API_KEY') == API_KEY:
@@ -206,6 +208,7 @@ def make_thumbnail():
         return {'result': thumb}, 201
     else:
         return "", 403
+"""
 
 
 @app.route("/update_xmage_version", methods=['POST'])
