@@ -106,7 +106,8 @@ def pdf2png():
 
 
 
-@app.route("/upload_leaderboard", methods=['POST'])
+"""
+@app.route("/api/v1/upload_leaderboard", methods=['POST'])
 def upload_leaderboard():
 	if request.headers.get('API_KEY') == API_KEY:
 		data = request.get_json()
@@ -123,23 +124,25 @@ def upload_leaderboard():
 	else:
 		logging.warning("/upload_leaderboard: API_KEY not sent")
 		return "", 403
+"""
 
 
-@app.route("/upload_stats", methods=['POST'])
+"""
+@app.route("/api/v1/upload_stats", methods=['POST'])
 def upload_stats():
 	if request.headers.get('API_KEY') == API_KEY:
 		data = request.get_json()
-		user_id = int(data['user_id'])
+		user_id = int(data['member_id'])
 
-		discord_id = data['user_id']
+		discord_id = data['member_id']
 		database.touch_stats(discord_id)
 		database.upsert_devotion(discord_id, data['devotion']['name'], int(data['devotion']['value']), int(data['devotion']['next']))
 		database.upsert_victory(discord_id, data['victory']['name'], int(data['victory']['value']), int(data['victory']['next']))
 		database.upsert_trophies(discord_id, data['trophies']['name'], int(data['trophies']['value']), int(data['trophies']['next']))
 		database.upsert_shark(discord_id, data['shark']['name'], int(data["shark"]["value"]), int(data["shark"]["next"]), bool(data["shark"]["is_shark"]))
 		database.upsert_hero(discord_id, data['hero']['name'], int(data['hero']['value']), int(data['hero']['next']))
-		database.upsert_win_rate_recent(discord_id, float(data['win_rate_recent']['league']), float(data['win_rate_recent']['bonus']), float(data['win_rate_recent']['overall']))
-		database.upsert_win_rate_all_time( discord_id, float(data['win_rate_all_time']['league']), float(data['win_rate_all_time']['bonus']), float(data['win_rate_all_time']['overall']))
+		database.upsert_win_rate_recent(discord_id, float(data['win_rate_recent']['chrono']), float(data['win_rate_recent']['bonus']), float(data['win_rate_recent']['overall']))
+		database.upsert_win_rate_all_time( discord_id, float(data['win_rate_all_time']['chrono']), float(data['win_rate_all_time']['bonus']), float(data['win_rate_all_time']['overall']))
 
 		logging.info(F"/upload_stats: discord_id:{user_id}")
 
@@ -161,9 +164,11 @@ def upload_stats():
 	else:
 		logging.warning("/upload_stats: API_KEY not sent")
 		return "", 403
+"""
 
 
-@app.route("/upload_commands", methods=['POST'])
+"""
+@app.route("/api/v1/upload_commands", methods=['POST'])
 def upload_commands():
 	if request.headers.get('API_KEY') == API_KEY:
 		database.clear_commands()
@@ -175,6 +180,7 @@ def upload_commands():
 	else:
 		logging.warning("/upload_stats: API_KEY not sent")
 		return "", 403
+"""
 
 
 """
@@ -211,7 +217,8 @@ def make_thumbnail():
 """
 
 
-@app.route("/update_xmage_version", methods=['POST'])
+"""
+@app.route("/api/v1/update_xmage_version", methods=['POST'])
 def update_xmage_version():
     if request.headers.get('API_KEY') == API_KEY:
         version = request.json['version']
@@ -219,6 +226,7 @@ def update_xmage_version():
         return "", 200
     else:
         return "", 403
+"""
         
 
 """
