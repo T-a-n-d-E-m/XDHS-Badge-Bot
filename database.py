@@ -30,28 +30,28 @@ from datetime import datetime, timezone
 from config import config
 import mysql.connector
 
-g_database = None
+#g_database = None
 
 def connect():
-    global g_database
-    if g_database is not None and g_database.is_connected():
-        #print("Database already connected")
-        return g_database
-
+#    global g_database
+#    if g_database is not None and g_database.is_connected():
+#        #print("Database already connected")
+#        return g_database
     try:
-        g_database = mysql.connector.connect(
+        database = mysql.connector.connect(
             host = config['MYSQL']['ADDRESS'],
             user = config['MYSQL']['USERNAME'],
             password = config['MYSQL']['PASSWORD'],
             database = config['MYSQL']['DATABASE_NAME']
         )
-        return g_database
+        return database
     except Error as e:
         # TODO: If this fails, abort?
         logging.exception(e)
         return None
 
 
+"""
 def add_member(discord_id):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -66,14 +66,18 @@ def add_member(discord_id):
     cursor.execute("REPLACE INTO pod (id) VALUES (%s)", (discord_id,))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_leaderboard(league, season, member_id, rank, week_01, week_02, week_03, week_04, week_05, week_06, week_07, week_08, week_09, week_10, week_11, week_12, week_13, total, average, drafts, trophies, win_rate):
 	database = connect()
 	cursor = database.cursor(prepared=True)
 	cursor.execute("REPLACE INTO leaderboards (league, season, member_id, rank, week_01, week_02, week_03, week_04, week_05, week_06, week_07, week_08, week_09, week_10, week_11, week_12, week_13, points, average, drafts, trophies, win_rate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (league, season, member_id, rank, week_01, week_02, week_03, week_04, week_05, week_06, week_07, week_08, week_09, week_10, week_11, week_12, week_13, total, average, drafts, trophies, win_rate))
 	database.commit()
 	cursor.close()
+"""
 
+"""
 def upsert_badge_card(discord_id, url):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -81,6 +85,7 @@ def upsert_badge_card(discord_id, url):
     cursor.execute("REPLACE INTO badges (id, url, timestamp) VALUES (%s, %s, %s)", (discord_id, url, int(timestamp)))
     database.commit()
     cursor.close()
+"""
 
 def get_badge_card(discord_id):
     database = connect()
@@ -90,15 +95,19 @@ def get_badge_card(discord_id):
     if cursor.rowcount == 0:
         return None
     cursor.close()
+    database.close()
     return badges
 
+"""
 def upsert_badge_thumbnail(name, url):
     database = connect();
     cursor = database.cursor(prepared=True);
     cursor.execute("REPLACE INTO badge_thumbnails (name, url) VALUES (%s, %s)", (name, url));
     database.commit();
     cursor.close()
+"""
 
+"""
 def get_badge_thumbnail(name):
     database = connect();
     cursor = database.cursor(prepared=True)
@@ -108,6 +117,7 @@ def get_badge_thumbnail(name):
         return None
     cursor.close()
     return thumb
+"""
 
 def get_stats(discord_id):
     db = connect()
@@ -138,8 +148,10 @@ def get_stats(discord_id):
     if cursor.rowcount == 0:
         return None
     cursor.close()
+    db.close()
     return stats
 
+"""
 def touch_stats(discord_id):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -147,83 +159,106 @@ def touch_stats(discord_id):
     cursor.execute("REPLACE INTO stats (id, timestamp) VALUES (%s, %s)", (discord_id, int(timestamp)))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_devotion(discord_id, name, value, next):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO devotion (id, name, value, next) VALUES (%s, %s, %s, %s)", (discord_id, name, value, next))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_victory(discord_id, name, value, next):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO victory (id, name, value, next) VALUES (%s, %s, %s, %s)", (discord_id, name, value, next))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_trophies(discord_id, name, value, next):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO trophies (id, name, value, next) VALUES (%s, %s, %s, %s)", (discord_id, name, value, next))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_shark(discord_id, name, value, next, is_shark):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO shark (id, name, value, next, is_shark) VALUES (%s, %s, %s, %s, %s)", (discord_id, name, value, next, is_shark))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_hero(discord_id, name, value, next):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO hero (id, name, value, next) VALUES (%s, %s, %s, %s)", (discord_id, name, value, next))
     database.commit()
     cursor.close()
+"""
 
+"""
 def upsert_win_rate_recent(discord_id, league, bonus, overall):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO win_rate_recent (id, league, bonus, overall) VALUES (%s, %s, %s, %s)", (discord_id, league, bonus, overall))
     database.commit()
     cursor.close
+"""
 
+"""
 def upsert_win_rate_all_time(discord_id, league, bonus, overall):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO win_rate_all_time (id, league, bonus, overall) VALUES (%s, %s, %s, %s)", (discord_id, league, bonus, overall))
     database.commit()
     cursor.close
+"""
 
+"""
 def set_assigned_pod(discord_id, pod):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("UPDATE pod SET assigned=%s WHERE id=%s", (pod, discord_id))
     database.commit()
     cursor.close()
+"""
 
+"""
 def set_desired_pod(discord_id, pod):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("UPDATE pod SET desired=%s WHERE id=%s", (pod, discord_id))
     database.commit()
     cursor.close()
+"""
 
+"""
 def clear_commands():
     database = connect()
     cursor = database.cursor();
     cursor.execute("TRUNCATE TABLE commands");
     database.commit()
     cursor.close()
+"""
 
+"""
 def add_command(name, team, content):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("INSERT INTO commands (name, team, content) VALUES (%s, %s, %s)", (name, team, content))
     database.commit();
     cursor.close()
+"""
 
 def get_command_by_name(name):
     database = connect()
@@ -237,6 +272,7 @@ def get_command_by_name(name):
     cursor.close()
     return (bool(team), content)
 
+"""
 def get_pods(discord_id):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -248,7 +284,9 @@ def get_pods(discord_id):
     assigned = results[1];
     cursor.close()
     return (desired, assigned)
+"""
 
+"""
 def get_desired_pod(discord_id):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -259,14 +297,18 @@ def get_desired_pod(discord_id):
     desired = results[0]
     cursor.close()
     return desired
+"""
 
+"""
 def set_pods(discord_id, desired, assigned):
     database = connect()
     cursor = database.cursor(prepared=True)
     cursor.execute("REPLACE INTO pod (id, desired, assigned) VALUES (%s, %s, %s)", (discord_id, desired, assigned))
     database.commit()
     cursor.close()
+"""
 
+"""
 def get_win_rate_recent(discord_id):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -279,7 +321,9 @@ def get_win_rate_recent(discord_id):
     overall = results[2]
     cursor.close()
     return (league, bonus, overall)
+"""
 
+"""
 def get_win_rate_all_time(discord_id):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -292,7 +336,9 @@ def get_win_rate_all_time(discord_id):
     overall = results[2]
     cursor.close()
     return (league, bonus, overall)
+"""
 
+"""
 def get_all_pod_and_win_rates():
     database = connect()
     cursor = database.cursor()
@@ -300,7 +346,9 @@ def get_all_pod_and_win_rates():
     results = cursor.fetchall()
     cursor.close()
     return results
+"""
 
+"""
 def upsert_xmage_version(version):
     database = connect()
     cursor = database.cursor(prepared=True)
@@ -308,3 +356,4 @@ def upsert_xmage_version(version):
     cursor.execute("REPLACE INTO xmage_version (version, timestamp) VALUES (%s, %s)", (version, int(timestamp)))
     database.commit()
     cursor.close()
+"""
