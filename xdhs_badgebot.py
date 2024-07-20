@@ -270,7 +270,7 @@ class MemberCommands(commands.Cog, name='Member Commands'):
 		return
 
 
-server.start_server()  # Start the web server before the bot
+#server.start_server()  # Start the web server before the bot
 
 bot.add_cog(TeamCommands(bot))
 bot.add_cog(MemberCommands(bot))

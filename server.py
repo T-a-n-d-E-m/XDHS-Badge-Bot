@@ -50,6 +50,7 @@ API_URL = config['FLASK']['API_URL']
 app = Flask(__name__)
 
 
+"""
 @app.route('/')
 def main():
 	return "up", 200
@@ -62,6 +63,7 @@ def get_image(filename):
 		return send_from_directory('/opt/XDHS-Badge-Bot/static', filename)
 	except FileNotFoundError:
 		abort(404)
+"""
 
 
 
@@ -244,9 +246,11 @@ def cache_badge_card():
 """
 
 
+"""
 def run():
 	app.run(host=config['FLASK']['BIND_ADDRESS'], port=config['FLASK']['BIND_PORT'])
 
 def start_server():
 	server = Thread(target=run)
 	server.start()
+"""
