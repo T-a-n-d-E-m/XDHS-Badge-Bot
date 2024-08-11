@@ -150,10 +150,6 @@ class MemberCommands(commands.Cog, name='Member Commands'):
 		self.bot = bot
 		self._last_member = None  # TODO: What's this?
 
-	@commands.command(name='TandEm', hidden=True)
-	async def tandem(self, ctx):
-		await ctx.send("https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg")  # hehehe
-
 	@commands.command(name='badges', brief='Show your badge card for all to see.', help= 'Your badge card is updated during the badge update of your most recent draft.')
 	async def badges(self, ctx):
 		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
