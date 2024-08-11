@@ -141,120 +141,24 @@ class MemberCommands(commands.Cog, name='Member Commands'):
 	@commands.command(name='badges', brief='Show your badge card for all to see.', help= 'Your badge card is updated during the badge update of your most recent draft.')
 	async def badges(self, ctx):
 		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
-			#await ctx.send(F"Use #{BOT_SPAM_CHANNEL_NAME} channel not #{ctx.channel.name}")
 			return
-
-		#if ctx.message.author.id == self.id:
-		#  return
-
-		discord_id = ctx.message.author.id
-		badges = database.get_badge_card(discord_id)
-		if badges is None:
-			await ctx.send(F"No badge card found for {ctx.message.author.name}.")
-			return
-
-		url = badges[0]
-		timestamp = badges[1]
-
-		embed = discord.Embed()
-		embed.set_image(url=url)
-		embed.timestamp = datetime.datetime.fromtimestamp(timestamp)
-		embed.set_footer(text=F"Last updated", icon_url="https://i.imgur.com/NPtgFpC.png") # TODO: The url for this icon should be a variable 'cause it's used in a few places.
-		await ctx.send(embed=embed)
+		await ctx.send(F"This command has been deprecated. Use the new ``/stats`` command to see your badge card.")
+		return
 
 	@commands.command(name='pmbadges', brief='View your badge card via private message.', help= 'Your badge card is updated during the badge update of your most recent draft.')
 	async def pmbadges(self, ctx):
 		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
-				#await ctx.send(F"Use #{BOT_SPAM_CHANNEL_NAME} channel not #{ctx.channel.name}")
 			return
-
-		#if ctx.message.author.id == self.id:
-		#  return
-
-		discord_id = ctx.message.author.id
-		badges = database.get_badge_card(discord_id)
-		if badges is None:
-			await ctx.send(F"No badge card found for {ctx.message.author.name}.")
-			return
-
-		await ctx.send(F"{ctx.message.author.name}, your badge card will be delivered via private message.")
-
-		url = badges[0]
-		timestamp = badges[1]
-
-		embed = discord.Embed()
-		embed.set_image(url=url)
-		embed.timestamp = datetime.datetime.fromtimestamp(timestamp)
-		embed.set_footer(text=F"Last updated", icon_url="https://i.imgur.com/NPtgFpC.png")
-		await ctx.message.author.send(embed=embed)
+		await ctx.send(F"This command has been deprecated. Use the new ``/stats`` command to see your badge card.")
+		return
 
 	@commands.command(name='stats', brief='Get your XDHS stats via private message', help='Your stats may take a few hours after a draft ends to update.')
 	async def stats(self, ctx):
 		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
-			#await ctx.send(F"Use #{BOT_SPAM_CHANNEL_NAME} channel not #{ctx.channel.name}")
 			return
-
-		#if ctx.message.author.id == self.id:
-		#  return
-
-		discord_id = ctx.message.author.id
-		stats = database.get_stats(discord_id)
-		print(F"stats for {discord_id}: {stats}")
-		if stats is None:
-			await ctx.send(F"No stats found for {ctx.message.author.name}. You must complete at least one XDHS chrono/bonus draft and wait a few hours after your first draft for your stats to be available.")
-			return
-
-		await ctx.send(F"{ctx.message.author.name}, your stats will be delivered via private message.")
-
-		embed = discord.Embed()
-		embed.title = F"Hello, {ctx.message.author.name}! Here are your XDHS stats."
-
-		embed.add_field(name='Devotion Badge', value=stats[1], inline=True)
-		embed.add_field(name='Devotion Points', value=stats[2], inline=True)
-		embed.add_field(name='Points needed for next badge', value=stats[3], inline=True)
-
-		embed.add_field(name='Victory Badge', value=stats[4], inline=True)
-		embed.add_field(name='Victory Points', value=stats[5], inline=True)
-		embed.add_field(name='Points needed for next badge', value=stats[6], inline=True)
-
-		embed.add_field(name="Trophy Badge", value=stats[7], inline=True)
-		embed.add_field(name="Trophy Points", value=stats[8], inline=True)
-		embed.add_field(name="Points needed for next badge", value=stats[9], inline=True)
-
-		embed.add_field(name="Shark Badge", value=stats[10], inline=True)
-		embed.add_field(name="Shark Kills", value=stats[11], inline=True)
-		embed.add_field(name="Kills needed for next badge", value=stats[12], inline=True)
-
-		embed.add_field(name="Draft Hero Badge", value=stats[13], inline=True)
-		embed.add_field(name="Hero Points", value=stats[14], inline=True)
-		embed.add_field(name="Points needed for next badge", value=stats[15], inline=True)
-
-		# Recent win rate
-		win_rate_recent_league_string = (str(stats[16]) + '%') if stats[16] > 0.0 else "-"
-		win_rate_recent_bonus_string = (str(stats[17]) + '%') if stats[17] > 0.0 else "-"
-		win_rate_recent_overall_string = (str(stats[18]) + '%') if stats[18] > 0.0 else "-"
-
-		embed.add_field(name='Chrono win rate (last 6 seasons)', value=win_rate_recent_league_string, inline=True)
-		embed.add_field(name='Bonus win rate (last 6 seasons)', value=win_rate_recent_bonus_string, inline=True)
-		embed.add_field(name='Overall win rate (last 6 seasons)', value=win_rate_recent_overall_string, inline=True)
-
-		# All time win rate
-		win_rate_all_time_league_string = (str(stats[19]) + '%') if stats[19] > 0.0 else "-"
-		win_rate_all_time_bonus_string = (str(stats[20]) + '%') if stats[20] > 0.0 else "-"
-		win_rate_all_time_overall_string = (str(stats[21]) + '%') if stats[21] > 0.0 else "-"
-
-		embed.add_field(name='Chrono win rate (all time)', value=win_rate_all_time_league_string, inline=True)
-		embed.add_field(name='Bonus win rate (all time)', value=win_rate_all_time_bonus_string, inline=True)
-		embed.add_field(name='Overall win rate (all time)', value=win_rate_all_time_overall_string, inline=True)
-
-		embed.timestamp = datetime.datetime.fromtimestamp(stats[0])
-		embed.set_footer(text=F"Last updated", icon_url="https://i.imgur.com/NPtgFpC.png")
-
-		await ctx.message.author.send(embed=embed)
+		await ctx.send(F"This command has been deprecated. Use the new ``/stats`` command to see your stats.")
 		return
 
-
-#server.start_server()  # Start the web server before the bot
 
 bot.add_cog(TeamCommands(bot))
 bot.add_cog(MemberCommands(bot))
