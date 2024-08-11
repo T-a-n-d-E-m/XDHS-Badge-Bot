@@ -112,18 +112,6 @@ class TeamCommands(commands.Cog, name="Team Commands"):
 		self.bot = bot
 		self._last_member = None  # TODO: What's this?
 
-	# UNFINISHED!
-	# The idea was to add a shark emoji to the nicknames of members with the shark role but some thought this would encourage too much spikey behaviour...
-	@commands.command(name='shark', brief="", help="<member name>", hidden=True)
-	@commands.has_permissions(change_nickname=True)
-	async def shark(self, ctx, member: discord.Member):
-		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_COMMANDS_CHANNEL_NAME).id:
-			return
-
-		# TODO: Check for empty nick first, in case it is "none"
-		await member.edit(nick=(F"{member.nick} 🦈"))
-		return
-
 
 	# When RoleBot sends a ?role command this removes/applies the role.
 	@commands.command(name='role', brief="Add or delete a role from a member.", help= "<verb> - add or del\n<role> - The role to add or delete (case sensitive)\n<member> - The member to change (case sensitive)", hidden=True)
