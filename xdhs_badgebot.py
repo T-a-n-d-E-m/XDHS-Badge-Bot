@@ -59,7 +59,7 @@ class UnfilteredBot(commands.Bot):
 
 bot = UnfilteredBot(command_prefix='?')
 
-
+"""
 # Catch 'command not found' errors and check for ?commandlist commands. Note to anyone reading this: Yes, this is how I did it. No, I will not be taking questions!
 @bot.event
 async def on_command_error(ctx, error):
@@ -82,7 +82,7 @@ async def on_command_error(ctx, error):
 				return await ctx.channel.send("Only XDHS Team members can use this command.")
 
 	await ctx.channel.send(error)
-
+"""
 
 @bot.event
 async def on_ready():
@@ -105,62 +105,5 @@ async def on_message(message):
 	else:
 		await bot.process_commands(message)
 
-
-class TeamCommands(commands.Cog, name="Team Commands"):
-	"""Commands usable only by team members"""
-	def __init__(self, bot):
-		self.bot = bot
-		self._last_member = None  # TODO: What's this?
-
-
-	# When RoleBot sends a ?role command this removes/applies the role.
-	@commands.command(name='role', brief="Add or delete a role from a member.", help= "<verb> - add or del\n<role> - The role to add or delete (case sensitive)\n<member> - The member to change (case sensitive)", hidden=True)
-	async def role(self, ctx, verb: str, role: discord.Role, member: discord.Member):
-		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_COMMANDS_CHANNEL_NAME).id:
-			#await ctx.send(F"Use #{BOT_COMMANDS_CHANNEL_NAME} channel not #{ctx.channel.name}")
-			return
-
-		if verb == "add":
-			await member.add_roles(role)
-			await ctx.send(F"Added {role} to {member}.")
-			return
-		elif verb == "del":
-			await member.remove_roles(role)
-			await ctx.send(F"Deleted {role} from {member}.")
-			return
-		else:
-			await ctx.send(F"unknown <verb> \"{verb}\" - use \"add\" or \"del\"")
-
-
-class MemberCommands(commands.Cog, name='Member Commands'):
-	"""Commands usable by all members"""
-	def __init__(self, bot):
-		self.bot = bot
-		self._last_member = None  # TODO: What's this?
-
-	@commands.command(name='badges', brief='Show your badge card for all to see.', help= 'Your badge card is updated during the badge update of your most recent draft.')
-	async def badges(self, ctx):
-		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
-			return
-		await ctx.send(F"This command has been deprecated. Use the new ``/stats`` command to see your badge card.")
-		return
-
-	@commands.command(name='pmbadges', brief='View your badge card via private message.', help= 'Your badge card is updated during the badge update of your most recent draft.')
-	async def pmbadges(self, ctx):
-		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
-			return
-		await ctx.send(F"This command has been deprecated. Use the new ``/stats`` command to see your badge card.")
-		return
-
-	@commands.command(name='stats', brief='Get your XDHS stats via private message', help='Your stats may take a few hours after a draft ends to update.')
-	async def stats(self, ctx):
-		if ctx.channel.id != discord.utils.get(ctx.guild.channels, name=BOT_SPAM_CHANNEL_NAME).id:
-			return
-		await ctx.send(F"This command has been deprecated. Use the new ``/stats`` command to see your stats.")
-		return
-
-
-bot.add_cog(TeamCommands(bot))
-bot.add_cog(MemberCommands(bot))
 
 bot.run(DISCORD_TOKEN)
